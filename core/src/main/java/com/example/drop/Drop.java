@@ -25,7 +25,7 @@ public class Drop extends ApplicationAdapter {
     @Override
     public void create() {
         //load image
-        dropImage = new Texture(Gdx.files.internal("droplet.png")); 
+        dropImage = new Texture(Gdx.files.internal("drop.png")); 
         bucketImage = new Texture(Gdx.files.internal("bucket.png")); 
 
         //load music
@@ -79,4 +79,5 @@ public class Drop extends ApplicationAdapter {
         if(bucket.x > 800 - 64) bucket.x = 800 - 64;
 
     }
+
 }
