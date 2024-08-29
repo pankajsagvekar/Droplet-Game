@@ -37,6 +37,7 @@ public class Drop extends ApplicationAdapter {
 
     @Override
     public void create() {
+        Gdx.graphics.setTitle("Droplet Game");
         // load image
         backgroundImage = new Texture(Gdx.files.internal("background.jpg"));
         dropImage = new Texture(Gdx.files.internal("drop.png"));
@@ -151,3 +152,5 @@ public class Drop extends ApplicationAdapter {
     }
 
 }
+
+// Note: Icons sizes: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows).
