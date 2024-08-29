@@ -123,10 +123,15 @@ public class Drop extends ApplicationAdapter {
 
             if(raindrop.y + 64 < 0){
                 raindrops.removeIndex(i); //remove drop after touching screen
-                i--; //// Adjust index after removal
+                i--; // Adjust index after removal
             }
-        }
 
+            if(raindrop.overlaps(bucket)) {
+                raindrops.removeIndex(i); //remove drop after touching BUCKET
+                i--; // Adjust index after removal
+            }
+
+        }
     }
 
 }
