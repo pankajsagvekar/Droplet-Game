@@ -81,7 +81,10 @@ public class Drop extends ApplicationAdapter {
         // rendering bucket
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(bucketImage, bucket.x, bucket.y);
+            batch.draw(bucketImage, bucket.x, bucket.y);
+            for(Rectangle raindrop: raindrops){
+                batch.draw(dropImage, raindrop.x, raindrop.y);
+            }
         batch.end();
 
         // mouse input
