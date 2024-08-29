@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,7 +22,10 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class Drop extends ApplicationAdapter {
     private Texture dropImage;
     private Texture bucketImage;
+    private Texture backgroundImage;
+
     private Music rainMusic;
+    private Sound dropSound;
 
     private OrthographicCamera camera;
     private SpriteBatch batch; // used to draw 2D images
@@ -34,11 +38,13 @@ public class Drop extends ApplicationAdapter {
     @Override
     public void create() {
         // load image
+        backgroundImage = new Texture(Gdx.files.internal("background.jpg"));
         dropImage = new Texture(Gdx.files.internal("drop.png"));
         bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 
         // load music
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop_sound.mp3"));
 
         // set camera
         camera = new OrthographicCamera();
@@ -75,12 +81,12 @@ public class Drop extends ApplicationAdapter {
     @Override
     public void render() {
         ScreenUtils.clear(0, 0, 0.2f, 1); // (r,g,b,a)
-        camera.update(); // update camera everytime it is done using matrix that's why we are using
-                         // projectionMatrix after that
+        camera.update(); // update camera everytime it is done using matrix that's why we are using projectionMatrix after that
 
         // rendering bucket
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+            batch.draw(backgroundImage,0, 0, 800, 480);
             batch.draw(bucketImage, bucket.x, bucket.y);
             for(Rectangle raindrop: raindrops){
                 batch.draw(dropImage, raindrop.x, raindrop.y);
@@ -91,17 +97,16 @@ public class Drop extends ApplicationAdapter {
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0); // return mouse position
-            camera.unproject(touchPos); // To transform these coordinates to our camera’s coordinate system, we need to
-                                        // call this method
+            camera.unproject(touchPos); // To transform these coordinates to our camera’s coordinate system, we need to call this method
             bucket.x = touchPos.x - 64 / 2; // follow mouse on x
         }
 
         // keyboard input
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
+            bucket.x -= 500 * Gdx.graphics.getDeltaTime();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            bucket.x += 200 * Gdx.graphics.getDeltaTime();
+            bucket.x += 500 * Gdx.graphics.getDeltaTime();
         }
 
         // get bucket to stay within screen limit
@@ -128,10 +133,21 @@ public class Drop extends ApplicationAdapter {
 
             if(raindrop.overlaps(bucket)) {
                 raindrops.removeIndex(i); //remove drop after touching BUCKET
+                dropSound.play();
                 i--; // Adjust index after removal
             }
-
         }
+    }
+
+    @Override
+    public void dispose(){
+        // dispose of all the native resources
+        backgroundImage.dispose();
+        dropImage.dispose();
+        bucketImage.dispose();
+        rainMusic.dispose();
+        dropSound.dispose();
+        batch.dispose();
     }
 
 }
