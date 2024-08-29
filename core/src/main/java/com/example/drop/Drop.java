@@ -2,12 +2,13 @@ package com.example.drop;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -53,9 +54,29 @@ public class Drop extends ApplicationAdapter {
 
         //rendering bucket
         batch.setProjectionMatrix(camera.combined);
-        
         batch.begin();
             batch.draw(bucketImage, bucket.x, bucket.y);
         batch.end();
+
+        //mouse input
+        if(Gdx.input.isTouched()){
+            Vector3 touchPos = new Vector3();
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0); //return mouse position
+            camera.unproject(touchPos); //To transform these coordinates to our camera’s coordinate system, we need to call this method
+            bucket.x = touchPos.x - 64/2; //follow mouse on x
+        }
+
+        //keyboard input
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            bucket.x += 200 * Gdx.graphics.getDeltaTime();
+        }
+
+        //get bucket to stay within screen limit
+        if(bucket.x < 0) bucket.x = 0;
+        if(bucket.x > 800 - 64) bucket.x = 800 - 64;
+
     }
 }
